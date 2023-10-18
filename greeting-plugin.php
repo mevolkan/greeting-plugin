@@ -13,12 +13,6 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-// Auth0 credentials
-// define these in wp_config
-define( 'AUTH0_API_AUDIENCE', 'API identifier for the WP REST API' );
-define( 'AUTH0_API_SIGNING_SECRET', 'API signing secret from Auth0' );
-define( 'AUTH0_API_DEBUG', 'Set to `true` to add debugging log entries' );
-
 require_once __DIR__ . '/src/wp-rest-api-auth0.php';
 
 // Database table creation on activation.
