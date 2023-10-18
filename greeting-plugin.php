@@ -13,6 +13,14 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+// Auth0 credentials
+// define these in wp_config
+define( 'AUTH0_API_AUDIENCE', 'API identifier for the WP REST API' );
+define( 'AUTH0_API_SIGNING_SECRET', 'API signing secret from Auth0' );
+define( 'AUTH0_API_DEBUG', 'Set to `true` to add debugging log entries' );
+
+require_once __DIR__ . '/src/wp-rest-api-auth0.php';
+
 // Database table creation on activation.
 register_activation_hook(__FILE__, 'greeting_plugin_activate');
 register_deactivation_hook(__FILE__, 'greeting_plugin_deactivate');
@@ -44,14 +52,14 @@ function greeting_plugin_register_routes() {
     register_rest_route('greeting', '/store', array(
         'methods' => 'POST',
         'callback' => 'store_greeting',
-        'permission_callback' => 'rest_is_user_logged_in',
+        'permission_callback' => 'determine_current_user',
     ));
 
     // Endpoint to retrieve a greeting via GET request.
     register_rest_route('greeting', '/fetch', array(
         'methods' => 'GET',
         'callback' => 'fetch_greeting',
-        'permission_callback' => 'rest_is_user_logged_in',
+        'permission_callback' => 'determine_current_user',
     ));
 }
 function store_greeting($request) {
@@ -72,11 +80,6 @@ function fetch_greeting() {
     return $greeting ? $greeting : 'No greeting found.';
 }
 
-function rest_is_user_logged_in() {
-    // Check if the user is authenticated via OAuth2. You should implement this part.
-    // Use the $provider to perform OAuth2 authentication.
-    // If authenticated, return true; otherwise, return false.
-}
 
 // Add an admin menu to display greetings.
 add_action('admin_menu', 'greeting_plugin_admin_menu');
